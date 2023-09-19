@@ -5,16 +5,22 @@ We developed a HyperDisGAN effectively controlling the locations of generated cr
 
 <img src='imgs/architecture.png' width="700px"/>
 
-# Requisites (Linux Environment）:
-conda install pytorch torchvision torchaudio pytorch-cuda=11.7 -c pytorch -c nvidia  
-
-conda install tqdm  
-
-conda install matplotlib==3.3.4  
-
-conda install seaborn  
-
-conda install scikit-learn  
+## Prerequisites
+- Linux or Windows
+- Python 3.8+
+- CPU or NVIDIA GPU + CUDA CuDNN
+- anaconda virtual environment
+  ```
+  conda install pytorch torchvision torchaudio pytorch-cuda=11.7 -c pytorch -c nvidia  
+  
+  conda install tqdm  
+  
+  conda install matplotlib==3.3.4  
+  
+  conda install seaborn  
+  
+  conda install scikit-learn  
+  ```
 
 # Datasets
 ```
@@ -46,6 +52,10 @@ covid_ct：
 ```
 
 # Running command
+```
 python train.py --cuda  --dataset_name covid_ct --project_name cyclegan_convnext_tiny --aux_classfier pretrained_aux_convnext_tiny.pth --model_name convnext_tiny --lambda_vertical 0.01 --lambda_horizontal 0.01
+```
 
+```
 python test.py --cuda  --dataset_name covid_ct --project_name cyclegan_convnext_tiny --aux_classfier pretrained_aux_convnext_tiny.pth --model_name convnext_tiny --classifier downstream_convnext_tiny.pth
+```
