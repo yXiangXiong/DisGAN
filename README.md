@@ -1,7 +1,7 @@
 # Introduction
 Conventional transformation methods primarily rely on the intra-domain knowledge. On the other hand, advanced generative adversarial networks generate cross-domain images lacking variety, particularly in small-scale datasets. In light of these challenges, we propose that accurately controlling the variation degrees of synthetic samples can reshape the decision boundary in hyperplane space for the downstream classifications.
 
-We developed a HyperDisGAN effectively controlling the locations of generated cross-domain and intra-domain samples. The locations are respectively defined using the vertical distances of the cross-domain samples to the optimal hyperplane and the horizontal distances of the intra-domain samples to the source samples, which are determined by \emph{Hinge Loss} and \emph{Pythagorean Theorem}.
+We developed a HyperDisGAN effectively controlling the locations of generated cross-domain and intra-domain samples. The locations are respectively defined using the vertical distances of the cross-domain samples to the optimal hyperplane and the horizontal distances of the intra-domain samples to the source samples, which are determined by Hinge Loss and Pythagorean Theorem.
 
 <img src='imgs/architecture.png' width="700px"/>
 
