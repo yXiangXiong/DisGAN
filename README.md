@@ -3,7 +3,7 @@ Conventional transformation methods primarily rely on the intra-domain knowledge
 
 We developed a HyperDisGAN effectively controlling the locations of generated cross-domain and intra-domain samples. The locations are respectively defined using the vertical distances of the cross-domain samples to the optimal hyperplane and the horizontal distances of the intra-domain samples to the source samples, which are determined by \emph{Hinge Loss} and \emph{Pythagorean Theorem}.
 
-<img src='imgs/architecture.png' width="800px"/>
+<img src='imgs/architecture.png' width="700px"/>
 
 # Requisites (Linux Environment）:
 conda install pytorch torchvision torchaudio pytorch-cuda=11.7 -c pytorch -c nvidia  
@@ -17,10 +17,6 @@ conda install seaborn
 conda install scikit-learn  
 
 # Datasets
-create a directory below and add your own datasets.
-
-all 3D images have same size of 256x256x512.
-
 ```
 covid_ct：
 ├─train├─X
