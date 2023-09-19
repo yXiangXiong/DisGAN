@@ -314,7 +314,7 @@ if __name__ == '__main__':
     parser.add_argument('--n_epochs', type=int, default=50, help='number of epochs of training')
     parser.add_argument('--train_batchSize', type=int, default=6, help='size of the batches')
     parser.add_argument('--val_batchSize', type=int, default=1, help='size of the batches')
-    parser.add_argument('--dataroot', type=str, default='/mnt/evo1/data/aaai2024/augmented_covid_ct', help='root directory of the dataset')
+    parser.add_argument('--dataroot', type=str, default='/mnt/evo1/data/iclr2024/augmented_covid_ct', help='root directory of the dataset')
     parser.add_argument('--G_lr', type=float, default=0.0001, help='initial learning rate')
     parser.add_argument('--D_lr', type=float, default=0.0001, help='initial learning rate')
     parser.add_argument('--C_lr', type=float, default=0.0001, help='initial learning rate')
