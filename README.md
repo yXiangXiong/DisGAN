@@ -15,6 +15,6 @@ conda install seaborn
 conda install scikit-learn  
 
 # Running command
-python train.py --cuda  
+python train.py --cuda  --aux_classfier pretrained_auxclassifier.pth --lambda_vertical 0.01 --lambda_horizontal 0.01
 
-python test.py --cuda
+python test.py --cuda  --aux_classfier pretrained_auxclassifier.pth --classifier downstream_classifier.pth
