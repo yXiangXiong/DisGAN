@@ -345,7 +345,7 @@ def test_c(module, dataloader, opt):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--batchSize', type=int, choices=[1], default=1, help='size of the batches')
-    parser.add_argument('--dataroot', type=str, default='/mnt/evo1/data/iclr2024/augmented_covid', help='root directory of the dataset')
+    parser.add_argument('--dataroot', type=str, default='/mnt/evo1/data/iclr2024/augmented_covid_ct', help='root directory of the dataset')
     parser.add_argument('--input_nc', type=int, default=3, help='number of channels of input data')
     parser.add_argument('--output_nc', type=int, default=3, help='number of channels of output data')
     parser.add_argument('--size', type=int, default=224, help='size of the data (squared assumed)')
