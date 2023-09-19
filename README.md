@@ -8,7 +8,7 @@ We developed a HyperDisGAN effectively controlling the locations of generated cr
 ## Prerequisites
 - Linux or Windows
 - Python 3.8+
-- CPU or NVIDIA GPU + CUDA CuDNN
+- NVIDIA GPU + CUDA CuDNN
 - anaconda virtual environment
   ```
   conda install pytorch torchvision torchaudio pytorch-cuda=11.7 -c pytorch -c nvidia  
