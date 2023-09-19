@@ -345,7 +345,7 @@ def test_c(module, dataloader, opt):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--batchSize', type=int, choices=[1], default=1, help='size of the batches')
-    parser.add_argument('--dataroot', type=str, default='/mnt/evo1/data/aaai2024/augmented_monarch_viceroy', help='root directory of the dataset')
+    parser.add_argument('--dataroot', type=str, default='/mnt/evo1/data/iclr2024/augmented_covid', help='root directory of the dataset')
     parser.add_argument('--input_nc', type=int, default=3, help='number of channels of input data')
     parser.add_argument('--output_nc', type=int, default=3, help='number of channels of output data')
     parser.add_argument('--size', type=int, default=224, help='size of the data (squared assumed)')
@@ -353,15 +353,15 @@ if __name__ == '__main__':
     parser.add_argument('--n_cpu', type=int, default=8, help='number of cpu threads to use during batch generation')
     parser.add_argument('--num_classes', default=1, type=int, help='Number of classes for classification')
     parser.add_argument('--gpu_ids', type=str, default='1')
-    parser.add_argument('--generator_A2B', type=str, default='checkpoints/butterfly/cyclegan_alexnet/best_netG_A2B.pth', help='A2B generator checkpoint file')
-    parser.add_argument('--generator_B2A', type=str, default='checkpoints/butterfly/cyclegan_alexnet/best_netG_B2A.pth', help='B2A generator checkpoint file')
-    parser.add_argument('--generator_A2A', type=str, default='checkpoints/butterfly/cyclegan_alexnet/best_netG_A2A.pth', help='A2B generator checkpoint file')
-    parser.add_argument('--generator_B2B', type=str, default='checkpoints/butterfly/cyclegan_alexnet/best_netG_B2B.pth', help='B2A generator checkpoint file')
-    parser.add_argument('--classifier', type=str, default='checkpoints/butterfly/cyclegan_alexnet/best_netC.pth', help='classifier checkpoint file')
-    parser.add_argument('--aux_classifier', type=str, default='/checkpoints/butterfly/pretrained/alexnet_best_netC.pth', help='classifier checkpoint file')
-    parser.add_argument('--dataset_name', default='butterfly', type=str, help='Choose the dataset name for save results')
-    parser.add_argument('--project_name', default='cyclegan_alexnet', type=str, help='Choose the project name for save results')
-    parser.add_argument('--model_name', default='alexnet', type=str, 
+    parser.add_argument('--generator_A2B', type=str, default='checkpoints/covid/cyclegan_convnext_tiny/best_netG_A2B.pth', help='A2B generator checkpoint file')
+    parser.add_argument('--generator_B2A', type=str, default='checkpoints/covid/cyclegan_convnext_tiny/best_netG_B2A.pth', help='B2A generator checkpoint file')
+    parser.add_argument('--generator_A2A', type=str, default='checkpoints/covid/cyclegan_convnext_tiny/best_netG_A2A.pth', help='A2B generator checkpoint file')
+    parser.add_argument('--generator_B2B', type=str, default='checkpoints/covid/cyclegan_convnext_tiny/best_netG_B2B.pth', help='B2A generator checkpoint file')
+    parser.add_argument('--classifier', type=str, default='checkpoints/covid/cyclegan_convnext_tiny/best_netC.pth', help='classifier checkpoint file')
+    parser.add_argument('--aux_classifier', type=str, default='/checkpoints/covid/pretrained/convnext_tiny_best_netC.pth', help='classifier checkpoint file')
+    parser.add_argument('--dataset_name', default='covid', type=str, help='Choose the dataset name for save results')
+    parser.add_argument('--project_name', default='cyclegan_convnext_tiny', type=str, help='Choose the project name for save results')
+    parser.add_argument('--model_name', default='convnext_tiny', type=str, 
         choices=['alexnet', 'vgg13', 'vgg16', 'googlenet', 'resnet18', 'resnet34', 'densenet121',
         'mnasnet1_0', 'mobilenet_v3_small', 'efficientnet_b5', 'convnext_tiny'], help='Choose the model you want train')
     opt = parser.parse_args()
