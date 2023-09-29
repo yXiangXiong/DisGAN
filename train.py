@@ -10,7 +10,7 @@ from collections import OrderedDict
 from init import Modules, Losses, Optimizers, LrShedulers, ReplayBuffer, MemoryAllocation
 from datasets import TrainLoader, ValLoader
 from utils import Logger, g_gan_loss_visualize, g_mse_loss_visualize, g_cycle_loss_visualize, d_loss_visualize, \
-    val_loss_visualize, val_acc_visualize, c_hinge_real_loss_visualize, c_hinge_fake_loss_visualize   
+    val_loss_visualize, val_acc_visualize, c_hinge_real_loss_visualize, c_hinge_fake_loss_visualize    
 
 
 def train_validation(module, loss, optimizer, lr_scheduler, trainloader, valloader, memory_allocation, opt):
@@ -48,30 +48,31 @@ def train_validation(module, loss, optimizer, lr_scheduler, trainloader, valload
             sys.stdout.write('\rTrain epoch %03d/%03d batch [%04d/%04d]' % (epoch+1, opt.n_epochs, i+1, len(trainloader.train_loader)))
             # Set model input
             real_A = Variable(memory_allocation.input_A.copy_(batch['A']))
-            real_AA = Variable(memory_allocation.input_AA.copy_(batch['AA']))
+            real_RA1 = Variable(memory_allocation.input_RA1.copy_(batch['RA1']))
             real_B = Variable(memory_allocation.input_B.copy_(batch['B']))
-            real_BB = Variable(memory_allocation.input_BB.copy_(batch['BB']))
+            real_RB1 = Variable(memory_allocation.input_RB1.copy_(batch['RB1']))
+            real_RB2 = Variable(memory_allocation.input_RB2.copy_(batch['RB2']))
 
             #----------------------------------------------------Auxiliary Classifier-------------------------------------------------------#
             # real_B
-            distance_B_label = module.aux_C(real_B).squeeze(-1)
-            X_B_coordinate = module.aux_corr(real_B)["coor"].squeeze(-1).squeeze(-1)
-            distance_BB_label = module.aux_C(real_BB).squeeze(-1)
-            X_BB_coordinate = module.aux_corr(real_BB)["coor"].squeeze(-1).squeeze(-1)
+            distance_RB1_label = module.aux_C(real_RB1).squeeze(-1)
+            X_RB1_coordinate = module.aux_corr(real_RB1)["coor"].squeeze(-1).squeeze(-1)
+            distance_RB2_label = module.aux_C(real_RB2).squeeze(-1)
+            X_RB2_coordinate = module.aux_corr(real_RB2)["coor"].squeeze(-1).squeeze(-1)
 
             # real_A 
             distance_A_label = module.aux_C(real_A).squeeze(-1)
             X_A_coordinate = module.aux_corr(real_A)["coor"].squeeze(-1).squeeze(-1)
-            distance_AA_label = module.aux_C(real_AA).squeeze(-1)
-            X_AA_coordinate = module.aux_corr(real_AA)["coor"].squeeze(-1).squeeze(-1)
+            distance_RA1_label = module.aux_C(real_RA1).squeeze(-1)
+            X_RA1_coordinate = module.aux_corr(real_RA1)["coor"].squeeze(-1).squeeze(-1)
 
             # vertical edge
-            vertical_edgeA = torch.abs(distance_A_label - distance_AA_label)
-            vertical_edgeB = torch.abs(distance_B_label - distance_BB_label)
+            vertical_edgeA = torch.abs(distance_A_label - distance_RA1_label)
+            vertical_edgeB = torch.abs(distance_RB1_label - distance_RB2_label)
 
             # hypotenuse edge
-            hypotenuse_edgeA = ((X_A_coordinate - X_AA_coordinate)**2).sum(dim=1).sqrt()
-            hypotenuse_edgeB = ((X_B_coordinate - X_BB_coordinate)**2).sum(dim=1).sqrt()
+            hypotenuse_edgeA = ((X_A_coordinate - X_RA1_coordinate)**2).sum(dim=1).sqrt()
+            hypotenuse_edgeB = ((X_RB1_coordinate - X_RB2_coordinate)**2).sum(dim=1).sqrt()
             
             # horizontal edge
             horizontal_edgeA = (hypotenuse_edgeA**2 - vertical_edgeA**2).sqrt()
@@ -80,16 +81,16 @@ def train_validation(module, loss, optimizer, lr_scheduler, trainloader, valload
             #-------------------------------------------------- Generators A2B and B2A ----------------------------------------------#
             optimizer.optimizer_G_vertical.zero_grad()
 
-            fake_A2B = module.netG_A2B(real_A, distance_B_label.detach())
+            fake_A2B = module.netG_A2B(real_A, distance_RB1_label.detach())
             pred_fake = module.netD_A2B(fake_A2B)
             loss_GAN_A2B = loss.criterion_GAN(pred_fake, memory_allocation.target_real)  # GAN loss
 
-            fake_B2A = module.netG_B2A(real_B, distance_A_label.detach())
+            fake_B2A = module.netG_B2A(real_RB1, distance_A_label.detach())
             pred_fake = module.netD_B2A(fake_B2A)
             loss_GAN_B2A = loss.criterion_GAN(pred_fake, memory_allocation.target_real)  # GAN loss
                 
             output_fakeA2B = module.aux_C(fake_A2B).squeeze(-1)
-            loss_mse_A2B = loss.criterion_mse(output_fakeA2B, distance_B_label.detach()) * opt.lambda_vertical
+            loss_mse_A2B = loss.criterion_mse(output_fakeA2B, distance_RB1_label.detach()) * opt.lambda_vertical
 
             output_fakeB2A = module.aux_C(fake_B2A).squeeze(-1)
             loss_mse_B2A = loss.criterion_mse(output_fakeB2A, distance_A_label.detach()) * opt.lambda_vertical
@@ -97,8 +98,8 @@ def train_validation(module, loss, optimizer, lr_scheduler, trainloader, valload
             recovered_B2A = module.netG_B2A(fake_A2B, distance_A_label.detach())
             loss_cycle_ABA = loss.criterion_cycle(recovered_B2A, real_A) * 10.0               # Cycle loss
 
-            recovered_A2B = module.netG_A2B(fake_B2A, distance_B_label.detach())
-            loss_cycle_BAB = loss.criterion_cycle(recovered_A2B, real_B) * 10.0               # Cycle loss
+            recovered_A2B = module.netG_A2B(fake_B2A, distance_RB1_label.detach())
+            loss_cycle_BAB = loss.criterion_cycle(recovered_A2B, real_RB1) * 10.0               # Cycle loss
 
             loss_G_vertical = loss_GAN_A2B + loss_GAN_B2A + loss_mse_A2B + loss_mse_B2A + loss_cycle_ABA + loss_cycle_BAB  # Total loss
             loss_G_vertical.backward()
@@ -116,7 +117,7 @@ def train_validation(module, loss, optimizer, lr_scheduler, trainloader, valload
             pred_fake = module.netD_A2A(fake_A2A)
             loss_GAN_A2A = loss.criterion_GAN(pred_fake, memory_allocation.target_real)  # GAN loss
 
-            fake_B2B = module.netG_B2B(real_B, -horizontal_edgeB.detach())
+            fake_B2B = module.netG_B2B(real_RB1, -horizontal_edgeB.detach())
             pred_fake = module.netD_B2B(fake_B2B)
             loss_GAN_B2B = loss.criterion_GAN(pred_fake, memory_allocation.target_real)  # GAN loss
                     
@@ -129,13 +130,13 @@ def train_validation(module, loss, optimizer, lr_scheduler, trainloader, valload
 
             output_fakeB2B = module.aux_C(fake_B2B).squeeze(-1)
             coord_fakeBB = module.aux_corr(fake_B2B)["coor"].squeeze(-1).squeeze(-1)
-            hypotenuse_edgeBB = ((coord_fakeBB - X_B_coordinate.detach())**2).sum(dim=1).sqrt()
-            vertical_edgeBB = torch.abs(output_fakeB2B - distance_B_label.detach())
+            hypotenuse_edgeBB = ((coord_fakeBB - X_RB1_coordinate.detach())**2).sum(dim=1).sqrt()
+            vertical_edgeBB = torch.abs(output_fakeB2B - distance_RB1_label.detach())
             horizontal_edgeBB = (hypotenuse_edgeBB**2 - vertical_edgeBB**2).sqrt()
             loss_mse_A2A = loss.criterion_mse(-horizontal_edgeBB, -horizontal_edgeB.detach()) * opt.lambda_horizontal
 
             recovered_B2B = module.netG_B2B(fake_B2B, horizontal_edgeB.detach())
-            loss_cycle_AAA = loss.criterion_cycle(recovered_B2B, real_B) * 10.0               # Cycle loss
+            loss_cycle_AAA = loss.criterion_cycle(recovered_B2B, real_RB1) * 10.0               # Cycle loss
 
             recovered_A2A = module.netG_A2A(fake_A2A, horizontal_edgeA.detach())
             loss_cycle_BBB = loss.criterion_cycle(recovered_A2A, real_A) * 10.0               # Cycle loss
@@ -204,7 +205,7 @@ def train_validation(module, loss, optimizer, lr_scheduler, trainloader, valload
             #--------------------------------------------------- Discriminator A2B ----------------------------------------------------#
             optimizer.optimizer_D_A2B.zero_grad()
 
-            pred_real = module.netD_A2B(real_B)
+            pred_real = module.netD_A2B(real_RB1)
             loss_D_real = loss.criterion_GAN(pred_real, memory_allocation.target_real)   # Real loss
             
             fakeB_temp = fake_A2B # copy
@@ -221,7 +222,7 @@ def train_validation(module, loss, optimizer, lr_scheduler, trainloader, valload
             #--------------------------------------------------- Discriminator A2A ----------------------------------------------------#
             optimizer.optimizer_D_A2A.zero_grad()
             
-            pred_real = module.netD_A2A(real_AA)
+            pred_real = module.netD_A2A(real_RA1)
             loss_D_real = loss.criterion_GAN(pred_real, memory_allocation.target_real)   # Real loss
 
             fakeA2A_temp = fake_A2A # copy
@@ -238,7 +239,7 @@ def train_validation(module, loss, optimizer, lr_scheduler, trainloader, valload
             #--------------------------------------------------- Discriminator B2B ----------------------------------------------------#
             optimizer.optimizer_D_B2B.zero_grad()
 
-            pred_real = module.netD_B2B(real_BB)
+            pred_real = module.netD_B2B(real_RB2)
             loss_D_real = loss.criterion_GAN(pred_real, memory_allocation.target_real)   # Real loss
             
             fakeB2B_temp = fake_B2B # copy
@@ -255,7 +256,7 @@ def train_validation(module, loss, optimizer, lr_scheduler, trainloader, valload
         # Progress train report
         train_logger.log({'loss_G_GAN': train_loss_G_GAN, 'loss_G_mse': train_loss_G_mse, 'loss_G_cycle': train_loss_G_cycle, 'loss_D': train_loss_D,
                           'loss_C_hinge_real': train_loss_C_hinge_real, 'loss_C_hinge_fake': train_loss_C_hinge_fake},
-                    images={'real_A': real_A, 'real_B': real_B, 'fake_B2A': fakeA_temp, 'fake_A2B': fakeB_temp, 'fake_A2A': fakeA2A_temp, 'fake_B2B': fakeB2B_temp, 
+                    images={'real_A': real_A, 'real_B': real_RB1, 'fake_B2A': fakeA_temp, 'fake_A2B': fakeB_temp, 'fake_A2A': fakeA2A_temp, 'fake_B2B': fakeB2B_temp, 
                     'reconstruct_A2B': recovered_A2B, 'reconstruct_B2A': recovered_B2A, 'reconstruct_A2A': recovered_A2A, 'reconstruct_B2B': recovered_B2B})
 
         lr_scheduler.lr_scheduler_G_vertical.step()     # Update G_vertical learning rate

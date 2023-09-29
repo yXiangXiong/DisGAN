@@ -177,8 +177,9 @@ class MemoryAllocation():
             # inputs memory allocation
             self.input_A = self.Tensor_G_D(batchSize, input_nc, size, size).cuda(gpu_ids[0])
             self.input_B = self.Tensor_G_D(batchSize, output_nc, size, size).cuda(gpu_ids[0])
-            self.input_AA = self.Tensor_G_D(batchSize, input_nc, size, size).cuda(gpu_ids[0])
-            self.input_BB = self.Tensor_G_D(batchSize, output_nc, size, size).cuda(gpu_ids[0])
+            self.input_RA1 = self.Tensor_G_D(batchSize, input_nc, size, size).cuda(gpu_ids[0])
+            self.input_RB1 = self.Tensor_G_D(batchSize, output_nc, size, size).cuda(gpu_ids[0])
+            self.input_RB2 = self.Tensor_G_D(batchSize, output_nc, size, size).cuda(gpu_ids[0])
 
             # synthesis targets memory allocation
             self.target_real = Variable(self.Tensor_G_D(batchSize, 1).cuda(gpu_ids[0]).fill_(1.0), requires_grad=False)

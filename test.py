@@ -2,6 +2,7 @@ import argparse
 import sys
 import os
 import torch
+import random
 
 import numpy as np
 from torchvision.utils import save_image
@@ -22,7 +23,7 @@ from feature_show import define_model_trunc, plot_2d_features, plot_3d_features
 import warnings
 warnings.filterwarnings("ignore")
 
-def test_distance_vertical(module, dataloader, memory_allocation, opt):
+def test_distance_vertical(module, dataloader, data_c_loader, memory_allocation, opt):
     result_test_path = 'results/{}/{}'.format(opt.dataset_name, opt.project_name) +'/test'
     real_distance_B = []
     real_distance_A = []
@@ -30,7 +31,7 @@ def test_distance_vertical(module, dataloader, memory_allocation, opt):
     distance_output_A = []
     for i, batch in enumerate(dataloader.test_loader):
         real_A = Variable(memory_allocation.input_A.copy_(batch['A']))  # Set model input realA
-        real_B = Variable(memory_allocation.input_B.copy_(batch['B']))  # Set model input realB
+        real_B = Variable(memory_allocation.input_RB1.copy_(batch['RB1']))  # Set model input realB
              
         # real_B
         distance_B_label = module.aux_C(real_B).squeeze(-1)
@@ -48,24 +49,24 @@ def test_distance_vertical(module, dataloader, memory_allocation, opt):
 
     print(np.min(distance_output_A), np.max(distance_output_A))
     print(np.min(distance_output_B), np.max(distance_output_B))
-    plt.plot(real_distance_A, label='target X projection distance')
-    plt.plot(distance_output_A, label='reconstructed X projection distance')
+    plt.plot(real_distance_A, label='target X vertical distance')
+    plt.plot(distance_output_A, label='reconstructed X vertical distance')
     plt.xlabel("training samples")
-    plt.ylabel("projection distances")
+    plt.ylabel("vertical distances")
     plt.legend()
     plt.savefig(result_test_path + '/distance_Y2X.png', dpi=200)
     plt.close()
 
-    plt.plot(real_distance_B, label='target Y projection distance')
-    plt.plot(distance_output_B, label='reconstructed Y projection distance')
+    plt.plot(real_distance_B, label='target Y vertical distance')
+    plt.plot(distance_output_B, label='reconstructed Y vertical distance')
     plt.xlabel("training samples")
-    plt.ylabel("projection distances")
+    plt.ylabel("vertical distances")
     plt.legend()
     plt.savefig(result_test_path + '/distance_X2Y.png', dpi=200)
     plt.close()
 
 
-def test_distance_horizontal(module, dataloader, memory_allocation, opt):
+def test_distance_horizontal(module, dataloader, data_c_loader, memory_allocation, opt):
     result_test_path = 'results/{}/{}'.format(opt.dataset_name, opt.project_name) +'/test'
     real_distance_B = []
     real_distance_A = []
@@ -73,9 +74,9 @@ def test_distance_horizontal(module, dataloader, memory_allocation, opt):
     distance_output_A = []
     for i, batch in enumerate(dataloader.test_loader):
         real_A = Variable(memory_allocation.input_A.copy_(batch['A']))
-        real_AA = Variable(memory_allocation.input_AA.copy_(batch['AA']))
-        real_B = Variable(memory_allocation.input_B.copy_(batch['B']))
-        real_BB = Variable(memory_allocation.input_BB.copy_(batch['BB']))
+        real_AA = Variable(memory_allocation.input_RA1.copy_(batch['RA1']))
+        real_B = Variable(memory_allocation.input_RB1.copy_(batch['RB1']))
+        real_BB = Variable(memory_allocation.input_RB2.copy_(batch['RB2']))
              
         # real_B
         distance_B_label = module.aux_C(real_B).squeeze(-1)
@@ -124,18 +125,18 @@ def test_distance_horizontal(module, dataloader, memory_allocation, opt):
 
     print(np.min(distance_output_A), np.max(distance_output_A))
     print(np.min(distance_output_B), np.max(distance_output_B))
-    plt.plot(real_distance_A, label='target X projection distance')
-    plt.plot(distance_output_A, label='reconstructed X projection distance')
+    plt.plot(real_distance_A, label='target X horizontal distance')
+    plt.plot(distance_output_A, label='reconstructed X horizontal distance')
     plt.xlabel("training samples")
-    plt.ylabel("projection distances")
+    plt.ylabel("horizontal distances")
     plt.legend()
     plt.savefig(result_test_path + '/distance_X2X.png', dpi=200)
     plt.close()
 
-    plt.plot(real_distance_B, label='target Y projection distance')
-    plt.plot(distance_output_B, label='reconstructed Y projection distance')
+    plt.plot(real_distance_B, label='target Y horizontal distance')
+    plt.plot(distance_output_B, label='reconstructed Y horizontal distance')
     plt.xlabel("training samples")
-    plt.ylabel("projection distances")
+    plt.ylabel("horizontal distances")
     plt.legend()
     plt.savefig(result_test_path + '/distance_Y2Y.png', dpi=200)
     plt.close()
@@ -169,9 +170,9 @@ def test_gd(module, dataloader, data_c_loader, memory_allocation, opt):
     model_trunc = define_model_trunc(opt.project_name, module.netC)  # for plotting features
     for i, batch in enumerate(dataloader.test_loader):
         real_A = Variable(memory_allocation.input_A.copy_(batch['A']))
-        real_AA = Variable(memory_allocation.input_A.copy_(batch['AA']))
-        real_B = Variable(memory_allocation.input_B.copy_(batch['B']))
-        real_BB = Variable(memory_allocation.input_BB.copy_(batch['BB']))
+        real_AA = Variable(memory_allocation.input_RA1.copy_(batch['RA1'])) # random
+        real_B = Variable(memory_allocation.input_RB1.copy_(batch['RB1']))
+        real_BB = Variable(memory_allocation.input_RB2.copy_(batch['RB2'])) # random
                     
         # real_B
         distance_B_label = module.aux_C(real_B).squeeze(-1)
@@ -246,9 +247,8 @@ def test_gd(module, dataloader, data_c_loader, memory_allocation, opt):
 
     encoding_array = np.array(encoding_array)    
     testset_targets = np.array(x)
-    print(encoding_array.shape)
     plot_2d_features(encoding_array, class_to_idx, feature_path, testset_targets)
-    plot_3d_features(encoding_array, class_to_idx, feature_path, testset_targets)
+    # plot_3d_features(encoding_array, class_to_idx, feature_path, testset_targets)
     print('The 2D and 3D features have been plotted\n')
 
     sys.stdout.write('\n')
@@ -441,14 +441,14 @@ if __name__ == '__main__':
     module.netC.eval()
     
     # test the cyclegan (Generator & Disciminator) performance
-    data_gd_loader = TestGDLoader(opt.size, opt.dataroot, opt.batchSize, opt.n_cpu)
-    memory_allocation = MemoryAllocation(opt.cuda, opt.batchSize, opt.input_nc, opt.output_nc, opt.size, opt.gpu_ids)
-    data_c_loader = TestCLoader(opt.size, opt.dataroot, opt.batchSize, opt.n_cpu)
-    test_gd(module, data_gd_loader, data_c_loader, memory_allocation, opt)
+    # data_gd_loader = TestGDLoader(opt.size, opt.dataroot, opt.batchSize, opt.n_cpu)
+    # memory_allocation = MemoryAllocation(opt.cuda, opt.batchSize, opt.input_nc, opt.output_nc, opt.size, opt.gpu_ids)
+    # data_c_loader = TestCLoader(opt.size, opt.dataroot, opt.batchSize, opt.n_cpu)
+    # test_gd(module, data_gd_loader, data_c_loader, memory_allocation, opt)
 
     # test the distance reconstruction performance
-    test_distance_vertical(module, data_gd_loader, memory_allocation, opt)
-    test_distance_horizontal(module, data_gd_loader, memory_allocation, opt)
+    # test_distance_vertical(module, data_gd_loader, data_c_loader, memory_allocation, opt)
+    # test_distance_horizontal(module, data_gd_loader, data_c_loader, memory_allocation, opt)
 
     # test the classifier performance
     data_c_loader = TestCLoader(opt.size, opt.dataroot, opt.batchSize, opt.n_cpu)
