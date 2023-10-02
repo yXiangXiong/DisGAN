@@ -8,8 +8,8 @@ We developed a HyperDisGAN effectively controlling the locations of generated cr
 # Example of HyperDisGAN generation
 **#--------------------Breast Ultrasound--------------------# #-----------------------COVID-CT-----------------------#**
 <p align='left'>
-<img src='imgs/breast_ultrasound_generation_results.png' width="400px"/>
-<img src='imgs/covid19_generation_results.png' width="400px"/>
+<img src='imgs/breast_ultrasound_synthetic_results.png' width="400px"/>
+<img src='imgs/covid19_synthetic_results.png' width="400px"/>
 </p>
 
 # Training samples' distribution
