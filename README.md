@@ -5,6 +5,9 @@ We developed a HyperDisGAN effectively controlling the locations of generated cr
 
 <img src='imgs/HyperDisGAN.png' width="700px"/>
 
+# Introduction
+<img src='imgs/tsnes.png' width="700px"/>
+
 ## Prerequisites
 - Linux or Windows
 - Python 3.8+
