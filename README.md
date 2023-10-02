@@ -57,9 +57,11 @@ covid_ct：
 
 # Running command
 ```
-python train.py --cuda  --dataset_name covid_ct --project_name cyclegan_convnext_tiny --aux_classfier pretrained_aux_convnext_tiny.pth --model_name convnext_tiny --lambda_vertical 0.01 --lambda_horizontal 0.01
+python train.py --cuda  --dataset_name covid_ct --project_name cyclegan_convnext_tiny --aux_classfier pretrained_aux_convnext_tiny.pth
+--model_name convnext_tiny --lambda_vertical 0.01 --lambda_horizontal 0.01
 ```
 
 ```
-python test.py --cuda  --dataset_name covid_ct --project_name cyclegan_convnext_tiny --aux_classfier pretrained_aux_convnext_tiny.pth --model_name convnext_tiny --classifier downstream_convnext_tiny.pth
+python test.py --cuda  --dataset_name covid_ct --project_name cyclegan_convnext_tiny --aux_classfier pretrained_aux_convnext_tiny.pth
+--model_name convnext_tiny --classifier downstream_convnext_tiny.pth
 ```
