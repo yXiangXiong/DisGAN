@@ -5,8 +5,12 @@ We developed a HyperDisGAN effectively controlling the locations of generated cr
 
 <img src='imgs/HyperDisGAN.png' width="900px"/>
 
-# Example of ultraound image generation
+# Example of HyperDisGAN generation
+**#--------------------Breast Ultrasound--------------------# #-----------------------COVID-CT-----------------------#**
+<p align='left'>
 <img src='imgs/ultrasound_generation_results.png' width="400px"/>
+<img src='imgs/covid19_generation_results.png' width="400px"/>
+</p>
 
 # Training samples' distribution
 Ten auxiliary classifiers used in the HyperdisGAN
