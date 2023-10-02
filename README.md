@@ -14,6 +14,7 @@ We developed a HyperDisGAN effectively controlling the locations of generated cr
 
 # Training samples' distribution
 - Ten auxiliary classifiers used in the HyperdisGAN
+
 <img src='imgs/tsnes.png' width="800px"/>
 
 # Prerequisites
