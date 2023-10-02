@@ -3,7 +3,7 @@ Conventional transformation methods primarily rely on the intra-domain knowledge
 
 We developed a HyperDisGAN effectively controlling the locations of generated cross-domain and intra-domain samples. The locations are respectively defined using the vertical distances of the cross-domain samples to the optimal hyperplane and the horizontal distances of the intra-domain samples to the source samples, which are determined by Hinge Loss and Pythagorean Theorem.
 
-<img src='imgs/HyperDisGAN.png' width="800px"/>
+<img src='imgs/HyperDisGAN.png' width="900px"/>
 
 # Example of ultraound image generation
 <img src='imgs/ultrasound_generation_results.png' width="400px"/>
