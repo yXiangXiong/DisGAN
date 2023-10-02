@@ -5,10 +5,11 @@ We developed a HyperDisGAN effectively controlling the locations of generated cr
 
 <img src='imgs/HyperDisGAN.png' width="700px"/>
 
-# Introduction
-<img src='imgs/tsnes.png' width="700px"/>
+# training samples' distribution
+ten auxiliary classifiers used in the HyperdisGAN
+<img src='imgs/tsnes.png' width="800px"/>
 
-## Prerequisites
+# Prerequisites
 - Linux or Windows
 - Python 3.8+
 - NVIDIA GPU + CUDA CuDNN
