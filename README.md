@@ -13,7 +13,7 @@ We developed a HyperDisGAN effectively controlling the locations of generated cr
 </p>
 
 # Training samples' distribution
-- Ten auxiliary classifiers's hyperplane space constructed in the HyperDisGAN.
+- Ten auxiliary classifiers' hyperplane spaces constructed in the HyperDisGAN.
 
 <img src='imgs/tsnes.png' width="800px"/>
 
