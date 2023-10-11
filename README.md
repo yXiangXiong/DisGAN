@@ -5,6 +5,8 @@ We developed a HyperDisGAN effectively controlling the locations of generated cr
 
 <img src='imgs/architecture.png' width="900px"/>
 
+<img src='imgs/augmentation_manner.png' width="800px"/>
+
 # Example of HyperDisGAN generation
 **#--------------------Breast Ultrasound--------------------# #-----------------------COVID-CT-----------------------#**
 <p align='left'>
