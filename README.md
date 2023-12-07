@@ -14,11 +14,6 @@ We developed a DisGAN effectively controlling the variation degrees of generated
 <img src='imgs/covid19_synthetic_results.png' width="400px"/>
 </p>
 
-# Training samples' distribution
-- Ten auxiliary classifiers' hyperplane spaces constructed in the HyperDisGAN.
-
-<img src='imgs/tsnes.png' width="800px"/>
-
 # Prerequisites
 - Linux or Windows
 - Python 3.8+
