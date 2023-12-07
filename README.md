@@ -10,8 +10,8 @@ We developed a DisGAN effectively controlling the variation degrees of generated
 # Example of DisGAN generation
 **#--------------------Breast Ultrasound--------------------# #-----------------------COVID-CT-----------------------#**
 <p align='left'>
-<img src='imgs/breast_ultrasound_synthetic_results.png' width="400px"/>
-<img src='imgs/covid19_synthetic_results.png' width="400px"/>
+<img src='imgs/breast_ultrasound_synthetic_results.png' width="300px"/>
+<img src='imgs/covid19_synthetic_results.png' width="300px"/>
 </p>
 
 # Prerequisites
